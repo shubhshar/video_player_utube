@@ -12,6 +12,17 @@ const options = {
   };
 
   export const fetchFromApi = async (url) => {
-    const {data} = await axios.get(`${BASE_URL}/${url}`, options)
-    return data
+    try{
+      const data = await axios.get(`${BASE_URL}/${url}`, options)
+      return data.data
+    }catch(err){
+      if(err?.response?.status === 429 ){
+        options.headers['X-RapidAPI-Key'] = process.env.REACT_APP_RAPID_API_TOKN_TWO
+        const data = await axios.get(`${BASE_URL}/${url}`, options)
+        return data.data
+      }else{
+        throw err
+      }
+    }
+   
   }
